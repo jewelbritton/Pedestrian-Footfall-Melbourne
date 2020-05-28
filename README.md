@@ -19,7 +19,7 @@ After studying city planning and design in university, I have been very interest
 **Goals:** Discover which features have the greatest impact on footfall, and make prediction about future trends. <br />
 
 ## Data Sources
-* [Hourly Sidewalk Sensor Counts](#hourly-sidewalk-sensor-counts) 
+* [Hourly Sidewalk Sensor Counts](https://github.com/jewelbritton/Capstone/blob/master/README.md#hourly-sidewalk-sensor-counts-) 
 * Hourly Weather 
 * Yearly Building Data 
 * Bike Dock Locations & Capacities
