@@ -19,12 +19,12 @@ After studying city planning and design in university, I have been very interest
 **Goals:** Discover which features have the greatest impact on footfall, and make prediction about future trends. <br />
 
 ## Data Sources
-* [Hourly Sidewalk Sensor Counts](https://github.com/jewelbritton/Capstone/blob/master/README.md#hourly-sidewalk-sensor-counts-) 
-* Hourly Weather 
+* [Hourly Sidewalk Sensor Counts](#hourly-sidewalk-sensor-counts-) 
+* [Hourly Weather](#hourly-weather-) 
 * [Yearly Building Data](#yearly-building-data-) 
-* Bike Dock Locations & Capacities
-* Landmarks and Points of Interest
-* Street Lighting 
+* [Bike Dock Locations & Capacities](#bike-dock-locations-&-capacities-)
+* [Landmarks and Points of Interest](#landmarks-and-points-of-interest-)
+* [Street Lighting](#street-lighting-) 
 
 #### Hourly Sidewalk Sensor Counts <br />
 This dataset had location coordinates for each sensor, a sensor ID number, datetime of hourly records, and hourly count values. Data is given from 2009-present and is updated monthly. When the data collection began in 2009 there was only 18 sensors, and now there is 65, so many sensors have been added over the past ten years. During data cleaning, I found that many sensors had faulty records, and the counts would suddenly drop out for weeks or months at a time. New sensors would also be added halfway through the year. For consistancy, I created a function to produce a yearly list of sensors that had full records for at least 12 months at a time. Since the records were not very stable for the first two years and the records for 2020 are not yet a full 12 months, the scope of the sensors was altered to be 2011 - 2019. Below is a Tableau map visualisation of all the sensor's locations across the city.<br />
