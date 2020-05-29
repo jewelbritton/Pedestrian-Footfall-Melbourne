@@ -34,31 +34,62 @@ This dataset had location coordinates for each sensor, a sensor ID number, datet
 Using Selenium, I scraped hourly weather data for Melbourne from 2011 - 2019. This was included as an exogenous variable in the Time Series Analysis of the Sensor Count data. <br />
 
 #### Yearly Building Data <br />
-This dataset had yearly census information on building uses, number of floors, accessibility, and location coordinates. Below is a visualisation of the building data from 2018, with the colors representing different building uses. 
-<img src = "visuals/maps/2018 building use.png">
+<img align = "left" height = "300" src = "visuals/maps/2018 building use.png">
+This dataset had yearly census information on building uses, number of floors, accessibility, and location coordinates. Below is a visualisation of the building data from 2018, with the colors representing different building uses. <br />
+
+
+---
+
 
 #### Bike Dock Locations & Capacities <br />
+<img align = "left" height = "300" src = "visuals/maps/bike map.png">
 Until the end of 2019 Melbourne had a bike share system in the city, and this data set includes bike dock locations and capacities. 
-<img src = "visuals/maps/bike map.png">
+
+
+---
+
 
 #### Landmarks and Points of Interest <br />
+<img align = "left" height = "300" src = "visuals/maps/landmarks.png">
 This dataset provides the locations of various landmarks and points of interest in the city. The map below shows the various types of locations included, such as community use, place of worship, and many others.
-<img src = "visuals/maps/landmarks.png">
+
+
+---
+
 
 #### Street lighting <br />
+<img align = "left" height = "300" src = "visuals/maps/lighting map.png">
 Includes all city owned lighting with the wattage, light type, and location. 
-<img src = "visuals/maps/lighting map.png">
+
+
+---
+
 
 ## Time Series Analysis
 
-My first step was to perform a time series analysis for each sensor, and see how accurately I could forecast future footfall based on past counts and trends. 
+To fully analyze the Footfall Sensor dataset, the first step was to perform a time series analysis for each sensor. This allowed me to better understand trends in each sensor and see how accurately I could forecast future footfall based on past counts and trends. 
 
-Here is two sensors that had valid records for the entire period 2011-2019:
-*map*
+Here is two sensors that had valid records for the entire period 2011-2019: <br />
+<img src = "visuals/sensors 2 and 9.png">
 
-To begin understanding the trends and patterns for an individual sensor, I created heatmaps for each sensor. 
-*heatmap*
+To begin understanding the trends and patterns for an individual sensor, I created heatmaps for each sensor. <br />
+<img src = "visuals/heatmap_9.png" width = "500"><img src = "visuals/heatmap_2.png" width = "500">
+
 From these two different sensors we can already notice that there are dramatically different trends. Sensor 9 appears to be in a business district since it is almost exclusively busy on Monday-Friday, while sensor 2 is busiest on Fridays and in December. 
+
+**Forecasting with SARIMAX Model**
+For the time series modelling, I resampled the hourly data to be daily, which generalized the data slightly but gave smoother data. Since there were many hours in the middle of the night when no one would pass over the sensors, there were many hours when the records would be zero. <br />
+When I first put the sensor data into the time series forecasting the scores were not very accurate, and the future predictions soon became a flat line that did not take trends into account. To add more information, I scraped hourly weather using Selenium and added this as an exogenous variable in the SARIMAX model. However, this did not dramatically improve scores. Depending on the sensor, adding weather data either slightly improved or diminished the root MSE and R2 scores. While this was a disappointing discovery, it was interesting that some sensors were more influenced by the weather than others. <br />
+Below are the time series forecasts for the sensors from above, sensor 2 & 9. The different trends can be observed, yet both of the deep red forecast lines are not very accurate. 
+* Sensor 9 Scores <br />
+  -Root MSE: 284.16 <br />
+  -R2 Score: .319 <br />
+* Sensor 2 Scores <br />
+  -Root MSE: 203.21 <br />
+  -R2 Score: .306<br />
+*time series forecasts*
+
+Since I predicted that location features would impact footfall, I took these scores as a relative baseline to compare my future location based predictions against. This time series was not neccessarily very accurate, and since it has to be done for one sensor at a time it is not very time efficient or applicable to sensors that don't have years of past data. 
 
 ## Mapping Location Features
 
