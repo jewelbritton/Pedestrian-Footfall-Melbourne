@@ -65,7 +65,7 @@ Includes all city owned lighting with the wattage, light type, and location. <br
 
 To fully analyze the Footfall Sensor dataset, the first step was to perform a time series analysis for each sensor. This allowed me to better understand trends in each sensor and see how accurately I could forecast future footfall based on past counts and trends. 
 
-Here is two sensors that had valid records for the entire period 2011-2019: <br />
+Here are two sensors that had valid records for the entire period 2011-2019: <br />
 <img src = "visuals/sensors 2 and 9.png" width = "700">
 
 ### Trends
@@ -75,9 +75,7 @@ To begin understanding the trends and patterns for an individual sensor, I creat
 
 From these two different sensors we can already notice that there are dramatically different trends. Sensor 9 appears to be in a business district since it is almost exclusively busy on Monday-Friday, while sensor 2 is busiest on Fridays and in December. 
 
----
-
-**Forecasting with SARIMAX Model**
+### Forecasting with SARIMAX Model
 For the time series modelling, I resampled the hourly data to be daily, which generalized the data slightly but gave smoother data. Since there were many hours in the middle of the night when no one would pass over the sensors, there were many hours when the records would be zero. <br />
 When I first put the sensor data into the time series forecasting the scores were not very accurate, and the future predictions soon became a flat line that did not take trends into account. To add more information, I scraped hourly weather using Selenium and added this as an exogenous variable in the SARIMAX model. However, this did not dramatically improve scores. Depending on the sensor, adding weather data either slightly improved or diminished the root MSE and R2 scores. While this was a disappointing discovery, it was interesting that some sensors were more influenced by the weather than others. <br />
 Below are the time series forecasts for the sensors from above, sensor 2 & 9. The different trends can be observed, yet both of the deep red forecast lines are not very accurate. 
@@ -125,8 +123,6 @@ Since the number of location features did not vary within the year did not chang
   -Root MSE: 224.592 <br />
 The test score was much higher compared to the r2 score of the time series model, and the model seems to be performing relatively well already without much tuning. The root MSE is quite similar to the time series models above, yet this score is accounting for all sensors at the same time rather than being specific to one at a time. This model is performing better than the time series so far, and is much more generalizable. 
 
----
-
 ### Feature Importance
 
 **Features that decrease footfall:** <br />
@@ -136,8 +132,6 @@ Rather surprisingly, a greater number of retail locations in a sensor's radius a
 **Features that increase footfall:** <br />
 <img src = "visuals/linear regression results/positive feature importance.png" width = "600"> <br />
 A greater number of seats and hospitals had a positive impact on the amount of footfall a sensor recieved, as well as several pieces of city infrastructure such as floral boxes and tree guards. These were perhaps most surprising since these are the features that we would not neccessarily pay specific attention to when we walk around the city.
-
----
 
 #### Actual Vs. Predicted
 <img src = "visuals/linear regression results/actual vs predicted.png" width = "600">
@@ -157,15 +151,11 @@ After tuning the parameters and testing several different model types, this mode
   -Root MSE: 158.7632 <br />
 Each of these scores are better than the previous regression models and the time series models. This model is able to predict daily footfall for 2018 with about 90% accuracy, and the root MSE is much lower than each of the previous models. 
 
----
-
 ### Feature Importance
 
 **Features that Most Influence Predictions:** <br />
 <img src = "visuals/ada boost results/feature importance.png" width = "600"> <br />
 The features that were most influential for this model's predictions were all of the date based information. The counts from the previous year were the most important, but other information on the date was also important. This shows that there is a yearly trend in each sensor that is useful for forecasting. There were also several location based factors that were relatively important for predicting, such as the number of basketball hoops, bollards, average number of floors, and number of bicycle rails. 
-
----
 
 #### Actual Vs. Predicted
 <img src = "visuals/ada boost results/actual vs predicted.png" width = "600"> <br />
