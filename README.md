@@ -68,11 +68,15 @@ To fully analyze the Footfall Sensor dataset, the first step was to perform a ti
 Here is two sensors that had valid records for the entire period 2011-2019: <br />
 <img src = "visuals/sensors 2 and 9.png" width = "700">
 
+---
+
 To begin understanding the trends and patterns for an individual sensor, I created heatmaps for each sensor. <br />
 <img src = "visuals/heatmap_2.png">
 <img src = "visuals/heatmap_9.png">
 
 From these two different sensors we can already notice that there are dramatically different trends. Sensor 9 appears to be in a business district since it is almost exclusively busy on Monday-Friday, while sensor 2 is busiest on Fridays and in December. 
+
+---
 
 **Forecasting with SARIMAX Model**
 For the time series modelling, I resampled the hourly data to be daily, which generalized the data slightly but gave smoother data. Since there were many hours in the middle of the night when no one would pass over the sensors, there were many hours when the records would be zero. <br />
@@ -90,14 +94,99 @@ Below are the time series forecasts for the sensors from above, sensor 2 & 9. Th
   -Root MSE: 284.16 <br />
   -R2 Score: .319 <br />
 <img src = "visuals/sensor 9 timeseries forecast.png" width = "600"> 
+
 ---
 
 Since I predicted that location features would impact footfall, I took these scores as a relative baseline to compare my future location based predictions against. This time series was not neccessarily very accurate, and since it has to be done for one sensor at a time it is not very time efficient or applicable to sensors that don't have years of past data. 
 
 ## Mapping Location Features
 
+In order to begin adding location as a feature for predicting footfall at different sensors, I had to find a way to combine all of the location based datasets. I wanted to only include features that were within a very small distance from the sensors because I thought this would give a better idea of the features that impact footfall the most. To do this, I utilized the GeoPandas python library to create a polygon around each sensor with a 100 meter radius. Below is the map I created in folium that has the sensors plotted, and each of their surrounding radii. <br />
+<img src = "visuals/folium map of all sensors with radius.png">
+
+---
+
+### Mapping Nearby Features 
+Then, using GeoPandas again, I developed a function to check each item in each of the location datasets and see if the coordinate was inside each sensor's radius. If the point was inside, it was added to a list of coordinate points along with what type of feature it was. Then I created a function to plot all the features inside each sensor's radius. Below is the maps for sensor 2 and 9 with all of the features inside their radius. With this visual, we can see all of the features within a 100 meter radius from the sensor. Street lighting is coral, landmarks are purple, buildings are light blue, and street infrastructure is gray. The sensor can be seen in the center of the circle in dark blue. <br />
+
+---
+
+**Sensor 2**  <br />
+<img src = "visuals/sensor 2 features.png" width = "700">  <br />
+
+---
+
+**Sensor 9**  <br />
+<img src = "visuals/sensor 9 features.png" width = "700">
+
+---
+
 ## Regression to Predict Daily Footfall Based on Location Features
+Now that we could see which features are within 100 meters from each sensor, modelling could begin. For the first stage of modelling, I wanted to do a relatively simple Linear Regression to see it was possible to predict daily footfall for each sensor based only on the location features nearby. The features for the model were the number of each type of feature within the radius and the sensor ID, and was predicting daily average footfall. Below is a snippet of what the dataframe looked like. In total there was over 60 columns detailing the number of each nearby feature. <br />
+
+** ADD IMAGE (dataframe)
+
+Since the number of location features did not vary within the year did not change, I did not expect the model to be accurate in predicting the daily variation and trends. However, I thought it would be interesting to see which features most impacted footfall, and see how the scores compared to the time series model above. The training and test data was taken as a random 80/20 split, with all years mixed into each group.
+
+### Model Results
+* Linear Regression <br />
+  -Training Score: 0.7751 <br />
+  -Test Score: 0.7749 <br />
+  -CV Score: 0.7747 <br />
+  -Root MSE: 224.592 <br />
+The test score was much higher compared to the r2 score of the time series model, and the model seems to be performing relatively well already without much tuning. The root MSE is quite similar to the time series models above, yet this score is accounting for all sensors at the same time rather than being specific to one at a time. This model is performing better than the time series so far, and is much more generalizable. 
+
+---
+
+### Feature Importance
+
+**Features that decrease footfall:** <br />
+<img src = "visuals/linear regression results/negative feature importance.png" width = "600"> <br />
+Rather surprisingly, a greater number of retail locations in a sensor's radius actually negatively impacted footfall. Other interesting features that decreased footfall where a greater number of average building floors and parking locations.
+
+**Features that increase footfall:** <br />
+<img src = "visuals/linear regression results/positive feature importance.png" width = "600"> <br />
+A greater number of seats and hospitals had a positive impact on the amount of footfall a sensor recieved, as well as several pieces of city infrastructure such as floral boxes and tree guards. These were perhaps most surprising since these are the features that we would not neccessarily pay specific attention to when we walk around the city.
+
+---
+
+#### Actual Vs. Predicted
+<img src = "visuals/linear regression results/actual vs predicted.png" width = "600">
+This graph shows the difference between what the Linear Regression model predicted and the actual daily footfall. From this, we can observe the main drawback of this model - it predicts the same value everyday for each sensor. Since the features don't change within the year, the model has no way of taking daily trends into account. This also prevents the model from performing well when forecasting future footfall. <br />
+Even after tuning this model while using the same features, the CV score would improve to .828 by using a Decision Tree Regressor with GridSearchCV, yet the same problem with the Actual Vs. Predicted graph remains. This model using only location features can only become so accurate since it does not account for daily variation, and is unable to forecast future footfall.
 
 ## Forecasting Future Footfall
 
+In order to develop a model that could predict future footfall, I combined the location features used in the previous regression model with more date based information. Along with the number of different location features in the radius, information on the month, day, year, and day of week were included as features. Additionally, I included the number of counts from that day one year prior, or two years prior if there was not valid data from the previous year. With these features, the train and test data was split based on year, so the model was trained on data from 2011 - 2017 and the test data was all data from 2018. <br />
+After tuning the parameters and testing several different model types, this model produced the highest scores so far, and was able to predict 2018 daily footfall for each sensor with 90% accuracy. <br />
+
+### Model Results
+* Ada Boost Regressor <br />
+  -Training Score: 0.9994 <br />
+  -Test Score: 0.9032 <br />
+  -CV Score: 0.8744 <br />
+  -Root MSE: 158.7632 <br />
+Each of these scores are better than the previous regression models and the time series models. This model is able to predict daily footfall for 2018 with about 90% accuracy, and the root MSE is much lower than each of the previous models. 
+
+---
+
+### Feature Importance
+
+**Features that Most Influence Predictions:** <br />
+<img src = "visuals/ada boost results/feature importance.png" width = "600"> <br />
+The features that were most influential for this model's predictions were all of the date based information. The counts from the previous year were the most important, but other information on the date was also important. This shows that there is a yearly trend in each sensor that is useful for forecasting. There were also several location based factors that were relatively important for predicting, such as the number of basketball hoops, bollards, average number of floors, and number of bicycle rails. 
+
+---
+
+#### Actual Vs. Predicted
+<img src = "visuals/ada boost results/actual vs predicted.png" width = "600"> <br />
+With this graph we can see that the model is able to predict different daily counts for each sensor, unlike the previous model that predicted the same number of counts for each day. This model is therefore much more accurate, and there is a linear trend between predicted and actual. There are a couple of strong outliers where the model predicted much higher or lower than the actual, and these points could be investigated futher to better understand what influenced these variations. 
+
 ## Future Ideas
+This project was a great learning experience, and allowed me to better understand geospatial data science. Overall I am very happy with the results that I found, and am eager to continue working on this project in the future. As I develop this project further, I think it would have important applications for business owners and city planners in Melbourne to better understand pedestrian trends. <br />
+Some ideas I want to explore further to improve my model are:
+* return to analyzing hourly data rather than daily to get more precise trends
+* include more location features of the city 
+* include seasonal information such as city events, public holidays, sporting events, etc.
+* cluster sensors based on location features so it is possible to predict footfall for new sensors that don't have previous year data 
+
