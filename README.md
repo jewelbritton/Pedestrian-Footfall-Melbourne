@@ -66,10 +66,11 @@ Includes all city owned lighting with the wattage, light type, and location. <br
 To fully analyze the Footfall Sensor dataset, the first step was to perform a time series analysis for each sensor. This allowed me to better understand trends in each sensor and see how accurately I could forecast future footfall based on past counts and trends. 
 
 Here is two sensors that had valid records for the entire period 2011-2019: <br />
-<img src = "visuals/sensors 2 and 9.png">
+<img src = "visuals/sensors 2 and 9.png" width = "700">
 
 To begin understanding the trends and patterns for an individual sensor, I created heatmaps for each sensor. <br />
-<img src = "visuals/heatmap_9.png" width = "500"><img src = "visuals/heatmap_2.png" width = "500">
+<img src = "visuals/heatmap_2.png">
+<img src = "visuals/heatmap_9.png">
 
 From these two different sensors we can already notice that there are dramatically different trends. Sensor 9 appears to be in a business district since it is almost exclusively busy on Monday-Friday, while sensor 2 is busiest on Fridays and in December. 
 
@@ -77,13 +78,19 @@ From these two different sensors we can already notice that there are dramatical
 For the time series modelling, I resampled the hourly data to be daily, which generalized the data slightly but gave smoother data. Since there were many hours in the middle of the night when no one would pass over the sensors, there were many hours when the records would be zero. <br />
 When I first put the sensor data into the time series forecasting the scores were not very accurate, and the future predictions soon became a flat line that did not take trends into account. To add more information, I scraped hourly weather using Selenium and added this as an exogenous variable in the SARIMAX model. However, this did not dramatically improve scores. Depending on the sensor, adding weather data either slightly improved or diminished the root MSE and R2 scores. While this was a disappointing discovery, it was interesting that some sensors were more influenced by the weather than others. <br />
 Below are the time series forecasts for the sensors from above, sensor 2 & 9. The different trends can be observed, yet both of the deep red forecast lines are not very accurate. 
+
+* Sensor 2 Scores <br />
+  -Root MSE: 203.21 <br />
+  -R2 Score: .306 <br />
+<img src = "visuals/sensor 2 timeseries forecast.png" width = "600">
+
+---
+  
 * Sensor 9 Scores <br />
   -Root MSE: 284.16 <br />
   -R2 Score: .319 <br />
-* Sensor 2 Scores <br />
-  -Root MSE: 203.21 <br />
-  -R2 Score: .306<br />
-*time series forecasts*
+<img src = "visuals/sensor 9 timeseries forecast.png" width = "600"> 
+---
 
 Since I predicted that location features would impact footfall, I took these scores as a relative baseline to compare my future location based predictions against. This time series was not neccessarily very accurate, and since it has to be done for one sensor at a time it is not very time efficient or applicable to sensors that don't have years of past data. 
 
