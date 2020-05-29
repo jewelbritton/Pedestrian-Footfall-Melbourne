@@ -68,8 +68,7 @@ To fully analyze the Footfall Sensor dataset, the first step was to perform a ti
 Here is two sensors that had valid records for the entire period 2011-2019: <br />
 <img src = "visuals/sensors 2 and 9.png" width = "700">
 
----
-
+### Trends
 To begin understanding the trends and patterns for an individual sensor, I created heatmaps for each sensor. <br />
 <img src = "visuals/heatmap_2.png">
 <img src = "visuals/heatmap_9.png">
@@ -87,15 +86,11 @@ Below are the time series forecasts for the sensors from above, sensor 2 & 9. Th
   -Root MSE: 203.21 <br />
   -R2 Score: .306 <br />
 <img src = "visuals/sensor 2 timeseries forecast.png" width = "600">
-
----
   
 * Sensor 9 Scores <br />
   -Root MSE: 284.16 <br />
   -R2 Score: .319 <br />
 <img src = "visuals/sensor 9 timeseries forecast.png" width = "600"> 
-
----
 
 Since I predicted that location features would impact footfall, I took these scores as a relative baseline to compare my future location based predictions against. This time series was not neccessarily very accurate, and since it has to be done for one sensor at a time it is not very time efficient or applicable to sensors that don't have years of past data. 
 
@@ -109,22 +104,16 @@ In order to begin adding location as a feature for predicting footfall at differ
 ### Mapping Nearby Features 
 Then, using GeoPandas again, I developed a function to check each item in each of the location datasets and see if the coordinate was inside each sensor's radius. If the point was inside, it was added to a list of coordinate points along with what type of feature it was. Then I created a function to plot all the features inside each sensor's radius. Below is the maps for sensor 2 and 9 with all of the features inside their radius. With this visual, we can see all of the features within a 100 meter radius from the sensor. Street lighting is coral, landmarks are purple, buildings are light blue, and street infrastructure is gray. The sensor can be seen in the center of the circle in dark blue. <br />
 
----
-
 **Sensor 2**  <br />
 <img src = "visuals/sensor 2 features.png" width = "700">  <br />
-
----
 
 **Sensor 9**  <br />
 <img src = "visuals/sensor 9 features.png" width = "700">
 
----
-
 ## Regression to Predict Daily Footfall Based on Location Features
 Now that we could see which features are within 100 meters from each sensor, modelling could begin. For the first stage of modelling, I wanted to do a relatively simple Linear Regression to see it was possible to predict daily footfall for each sensor based only on the location features nearby. The features for the model were the number of each type of feature within the radius and the sensor ID, and was predicting daily average footfall. Below is a snippet of what the dataframe looked like. In total there was over 60 columns detailing the number of each nearby feature. <br />
 
-** ADD IMAGE (dataframe)
+<img src = "visuals/dataframe features.png">
 
 Since the number of location features did not vary within the year did not change, I did not expect the model to be accurate in predicting the daily variation and trends. However, I thought it would be interesting to see which features most impacted footfall, and see how the scores compared to the time series model above. The training and test data was taken as a random 80/20 split, with all years mixed into each group.
 
