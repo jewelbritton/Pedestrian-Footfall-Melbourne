@@ -30,40 +30,36 @@ After studying city planning and design in university, I have been very interest
 This dataset had location coordinates for each sensor, a sensor ID number, datetime of hourly records, and hourly count values. Data is given from 2009-present and is updated monthly. When the data collection began in 2009 there was only 18 sensors, and now there is 65, so many sensors have been added over the past ten years. During data cleaning, I found that many sensors had faulty records, and the counts would suddenly drop out for weeks or months at a time. New sensors would also be added halfway through the year. For consistancy, I created a function to produce a yearly list of sensors that had full records for at least 12 months at a time. Since the records were not very stable for the first two years and the records for 2020 are not yet a full 12 months, the scope of the sensors was altered to be 2011 - 2019. Below is a Tableau map visualisation of all the sensor's locations across the city.<br />
 <img src = "visuals/maps/sensor map.png">
 
+---
+
 #### Hourly Weather <br />
 Using Selenium, I scraped hourly weather data for Melbourne from 2011 - 2019. This was included as an exogenous variable in the Time Series Analysis of the Sensor Count data. <br />
 
-#### Yearly Building Data <br />
-<img align = "left" height = "300" src = "visuals/maps/2018 building use.png">
-This dataset had yearly census information on building uses, number of floors, accessibility, and location coordinates. Below is a visualisation of the building data from 2018, with the colors representing different building uses. <br />
-
-
 ---
 
+#### Yearly Building Data <br />
+This dataset had yearly census information on building uses, number of floors, accessibility, and location coordinates. Below is a visualisation of the building data from 2018, with the colors representing different building uses. <br />
+<img height = "300" src = "visuals/maps/2018 building use.png">
+
+---
 
 #### Bike Dock Locations & Capacities <br />
-<img align = "left" height = "300" src = "visuals/maps/bike map.png">
-Until the end of 2019 Melbourne had a bike share system in the city, and this data set includes bike dock locations and capacities. 
-
+Until the end of 2019 Melbourne had a bike share system in the city, and this data set includes bike dock locations and capacities. <br />
+<img height = "400" src = "visuals/maps/bike map.png">
 
 ---
-
 
 #### Landmarks and Points of Interest <br />
-<img align = "left" height = "300" src = "visuals/maps/landmarks.png">
-This dataset provides the locations of various landmarks and points of interest in the city. The map below shows the various types of locations included, such as community use, place of worship, and many others.
-
+This dataset provides the locations of various landmarks and points of interest in the city. The map below shows the various types of locations included, such as community use, place of worship, and many others. <br />
+<img height = "400" src = "visuals/maps/landmarks.png">
 
 ---
-
 
 #### Street lighting <br />
-<img align = "left" height = "300" src = "visuals/maps/lighting map.png">
-Includes all city owned lighting with the wattage, light type, and location. 
-
+Includes all city owned lighting with the wattage, light type, and location. <br />
+<img  height = "400" src = "visuals/maps/lighting map.png">
 
 ---
-
 
 ## Time Series Analysis
 
